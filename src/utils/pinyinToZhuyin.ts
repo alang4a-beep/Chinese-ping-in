@@ -1,0 +1,520 @@
+/**
+ * Complete, exhaustive mapping of all Mandarin Pinyin base syllables to Zhuyin (Bopomofo)
+ */
+export const PINYIN_BASE_TO_ZHUYIN: Record<string, string> = {
+  // A
+  'a': 'ㄚ',
+  'ai': 'ㄞ',
+  'an': 'ㄢ',
+  'ang': 'ㄤ',
+  'ao': 'ㄠ',
+
+  // B
+  'ba': 'ㄅㄚ',
+  'bai': 'ㄅㄞ',
+  'ban': 'ㄅㄢ',
+  'bang': 'ㄅㄤ',
+  'bao': 'ㄅㄠ',
+  'bei': 'ㄅㄟ',
+  'ben': 'ㄅㄣ',
+  'beng': 'ㄅㄥ',
+  'bi': 'ㄅㄧ',
+  'bian': 'ㄅㄧㄢ',
+  'biao': 'ㄅㄧㄠ',
+  'bie': 'ㄅㄧㄝ',
+  'bin': 'ㄅㄧㄣ',
+  'bing': 'ㄅㄧㄥ',
+  'bo': 'ㄅㄛ',
+  'bu': 'ㄅㄨ',
+
+  // C
+  'ca': 'ㄘㄚ',
+  'cai': 'ㄘㄞ',
+  'can': 'ㄘㄢ',
+  'cang': 'ㄘㄤ',
+  'cao': 'ㄘㄠ',
+  'ce': 'ㄘㄜ',
+  'cen': 'ㄘㄣ',
+  'ceng': 'ㄘㄥ',
+  'cha': 'ㄔㄚ',
+  'chai': 'ㄔㄞ',
+  'chan': 'ㄔㄢ',
+  'chang': 'ㄔㄤ',
+  'chao': 'ㄔㄠ',
+  'che': 'ㄔㄜ',
+  'chen': 'ㄔㄣ',
+  'cheng': 'ㄔㄥ',
+  'chi': 'ㄔ',
+  'chong': 'ㄔㄨㄥ',
+  'chou': 'ㄔㄡ',
+  'chu': 'ㄔㄨ',
+  'chua': 'ㄔㄨㄚ',
+  'chuai': 'ㄔㄨㄞ',
+  'chuan': 'ㄔㄨㄢ',
+  'chuang': 'ㄔㄨㄤ',
+  'chui': 'ㄔㄨㄟ',
+  'chun': 'ㄔㄨㄣ',
+  'chuo': 'ㄔㄨㄛ',
+  'ci': 'ㄘ',
+  'cong': 'ㄘㄨㄥ',
+  'cou': 'ㄘㄡ',
+  'cu': 'ㄘㄨ',
+  'cuan': 'ㄘㄨㄢ',
+  'cui': 'ㄘㄨㄟ',
+  'cun': 'ㄘㄨㄣ',
+  'cuo': 'ㄘㄨㄛ',
+
+  // D
+  'da': 'ㄉㄚ',
+  'dai': 'ㄉㄞ',
+  'dan': 'ㄉㄢ',
+  'dang': 'ㄉㄤ',
+  'dao': 'ㄉㄠ',
+  'de': 'ㄉㄜ',
+  'dei': 'ㄉㄟ',
+  'den': 'ㄉㄣ',
+  'deng': 'ㄉㄥ',
+  'di': 'ㄉㄧ',
+  'dia': 'ㄉㄧㄚ',
+  'dian': 'ㄉㄧㄢ',
+  'diao': 'ㄉㄧㄠ',
+  'die': 'ㄉㄧㄝ',
+  'ding': 'ㄉㄧㄥ',
+  'diu': 'ㄉㄧㄡ',
+  'dong': 'ㄉㄨㄥ',
+  'dou': 'ㄉㄡ',
+  'du': 'ㄉㄨ',
+  'duan': 'ㄉㄨㄢ',
+  'dui': 'ㄉㄨㄟ',
+  'dun': 'ㄉㄨㄣ',
+  'duo': 'ㄉㄨㄛ',
+
+  // E
+  'e': 'ㄜ',
+  'ei': 'ㄟ',
+  'en': 'ㄣ',
+  'eng': 'ㄥ',
+  'er': 'ㄦ',
+
+  // F
+  'fa': 'ㄈㄚ',
+  'fan': 'ㄈㄢ',
+  'fang': 'ㄈㄤ',
+  'fei': 'ㄈㄟ',
+  'fen': 'ㄈㄣ',
+  'feng': 'ㄈㄥ',
+  'fo': 'ㄈㄛ',
+  'fou': 'ㄈㄡ',
+  'fu': 'ㄈㄨ',
+
+  // G
+  'ga': 'ㄍㄚ',
+  'gai': 'ㄍㄞ',
+  'gan': 'ㄍㄢ',
+  'gang': 'ㄍㄤ',
+  'gao': 'ㄍㄠ',
+  'ge': 'ㄍㄜ',
+  'gei': 'ㄍㄟ',
+  'gen': 'ㄍㄣ',
+  'geng': 'ㄍㄥ',
+  'gong': 'ㄍㄨㄥ',
+  'gou': 'ㄍㄡ',
+  'gu': 'ㄍㄨ',
+  'gua': 'ㄍㄨㄚ',
+  'guai': 'ㄍㄨㄞ',
+  'guan': 'ㄍㄨㄢ',
+  'guang': 'ㄍㄨㄤ',
+  'gui': 'ㄍㄨㄟ',
+  'gun': 'ㄍㄨㄣ',
+  'guo': 'ㄍㄨㄛ',
+
+  // H
+  'ha': 'ㄏㄚ',
+  'hai': 'ㄏㄞ',
+  'han': 'ㄏㄢ',
+  'hang': 'ㄏㄤ',
+  'hao': 'ㄏㄠ',
+  'he': 'ㄏㄜ',
+  'hei': 'ㄏㄟ',
+  'hen': 'ㄏㄣ',
+  'heng': 'ㄏㄥ',
+  'hm': 'ㄏㄇ',
+  'hng': 'ㄏㄥ',
+  'hong': 'ㄏㄨㄥ',
+  'hou': 'ㄏㄡ',
+  'hu': 'ㄏㄨ',
+  'hua': 'ㄏㄨㄚ',
+  'huai': 'ㄏㄨㄞ',
+  'huan': 'ㄏㄨㄢ',
+  'huang': 'ㄏㄨㄤ',
+  'hui': 'ㄏㄨㄟ',
+  'hun': 'ㄏㄨㄣ',
+  'huo': 'ㄏㄨㄛ',
+
+  // J
+  'ji': 'ㄐㄧ',
+  'jia': 'ㄐㄧㄚ',
+  'jian': 'ㄐㄧㄢ',
+  'jiang': 'ㄐㄧㄤ',
+  'jiao': 'ㄐㄧㄠ',
+  'jie': 'ㄐㄧㄝ',
+  'jin': 'ㄐㄧㄣ',
+  'jing': 'ㄐㄧㄥ',
+  'jiong': 'ㄐㄩㄥ',
+  'jiu': 'ㄐㄧㄡ',
+  'ju': 'ㄐㄩ',
+  'juan': 'ㄐㄩㄢ',
+  'jue': 'ㄐㄩㄝ',
+  'jun': 'ㄐㄩㄣ',
+
+  // K
+  'ka': 'ㄎㄚ',
+  'kai': 'ㄎㄞ',
+  'kan': 'ㄎㄢ',
+  'kang': 'ㄎㄤ',
+  'kao': 'ㄎㄠ',
+  'ke': 'ㄎㄜ',
+  'kei': 'ㄎㄟ',
+  'ken': 'ㄎㄣ',
+  'keng': 'ㄎㄥ',
+  'kong': 'ㄎㄨㄥ',
+  'kou': 'ㄎㄡ',
+  'ku': 'ㄎㄨ',
+  'kua': 'ㄎㄨㄚ',
+  'kuai': 'ㄎㄨㄞ',
+  'kuan': 'ㄎㄨㄢ',
+  'kuang': 'ㄎㄨㄤ',
+  'kui': 'ㄎㄨㄟ',
+  'kun': 'ㄎㄨㄣ',
+  'kuo': 'ㄎㄨㄛ',
+
+  // L
+  'la': 'ㄌㄚ',
+  'lai': 'ㄌㄞ',
+  'lan': 'ㄌㄢ',
+  'lang': 'ㄌㄤ',
+  'lao': 'ㄌㄠ',
+  'le': 'ㄌㄜ',
+  'lei': 'ㄌㄟ',
+  'leng': 'ㄌㄥ',
+  'li': 'ㄌㄧ',
+  'lia': 'ㄌㄧㄚ',
+  'lian': 'ㄌㄧㄢ',
+  'liang': 'ㄌㄧㄤ',
+  'liao': 'ㄌㄧㄠ',
+  'lie': 'ㄌㄧㄝ',
+  'lin': 'ㄌㄧㄣ',
+  'ling': 'ㄌㄧㄥ',
+  'liu': 'ㄌㄧㄡ',
+  'lo': 'ㄌㄛ',
+  'long': 'ㄌㄨㄥ',
+  'lou': 'ㄌㄡ',
+  'lu': 'ㄌㄨ',
+  'luan': 'ㄌㄨㄢ',
+  'lun': 'ㄌㄨㄣ',
+  'luo': 'ㄌㄨㄛ',
+  'lv': 'ㄌㄩ',
+  'lü': 'ㄌㄩ',
+  'lve': 'ㄌㄩㄝ',
+  'lüe': 'ㄌㄩㄝ',
+
+  // M
+  'ma': 'ㄇㄚ',
+  'mai': 'ㄇㄞ',
+  'man': 'ㄇㄢ',
+  'mang': 'ㄇㄤ',
+  'mao': 'ㄇㄠ',
+  'me': 'ㄇㄜ',
+  'mei': 'ㄇㄟ',
+  'men': 'ㄇㄣ',
+  'meng': 'ㄇㄥ',
+  'mi': 'ㄇㄧ',
+  'mian': 'ㄇㄧㄢ',
+  'miao': 'ㄇㄧㄠ',
+  'mie': 'ㄇㄧㄝ',
+  'min': 'ㄇㄧㄣ',
+  'ming': 'ㄇㄧㄥ',
+  'miu': 'ㄇㄧㄡ',
+  'mo': 'ㄇㄛ',
+  'mou': 'ㄇㄡ',
+  'mu': 'ㄇㄨ',
+
+  // N
+  'na': 'ㄋㄚ',
+  'nai': 'ㄋㄞ',
+  'nan': 'ㄋㄢ',
+  'nang': 'ㄋㄤ',
+  'nao': 'ㄋㄠ',
+  'ne': 'ㄋㄜ',
+  'nei': 'ㄋㄟ',
+  'nen': 'ㄋㄣ',
+  'neng': 'ㄋㄥ',
+  'ng': 'ㄥ',
+  'ni': 'ㄋㄧ',
+  'nia': 'ㄋㄧㄚ',
+  'nian': 'ㄋㄧㄢ',
+  'niang': 'ㄋㄧㄤ',
+  'niao': 'ㄋㄧㄠ',
+  'nie': 'ㄋㄧㄝ',
+  'nin': 'ㄋㄧㄣ',
+  'ning': 'ㄋㄧㄥ',
+  'niu': 'ㄋㄧㄡ',
+  'nong': 'ㄋㄨㄥ',
+  'nou': 'ㄋㄡ',
+  'nu': 'ㄋㄨ',
+  'nuan': 'ㄋㄨㄢ',
+  'nun': 'ㄋㄨㄣ',
+  'nuo': 'ㄋㄨㄛ',
+  'nv': 'ㄋㄩ',
+  'nü': 'ㄋㄩ',
+  'nve': 'ㄋㄩㄝ',
+  'nüe': 'ㄋㄩㄝ',
+
+  // O
+  'o': 'ㄛ',
+  'ou': 'ㄡ',
+
+  // P
+  'pa': 'ㄆㄚ',
+  'pai': 'ㄆㄞ',
+  'pan': 'ㄆㄢ',
+  'pang': 'ㄆㄤ',
+  'pao': 'ㄆㄠ',
+  'pei': 'ㄆㄟ',
+  'pen': 'ㄆㄣ',
+  'peng': 'ㄆㄥ',
+  'pi': 'ㄆㄧ',
+  'pian': 'ㄆㄧㄢ',
+  'piao': 'ㄆㄧㄠ',
+  'pie': 'ㄆㄧㄝ',
+  'pin': 'ㄆㄧㄣ',
+  'ping': 'ㄆㄧㄥ',
+  'po': 'ㄆㄛ',
+  'pou': 'ㄆㄡ',
+  'pu': 'ㄆㄨ',
+
+  // Q
+  'qi': 'ㄑㄧ',
+  'qia': 'ㄑㄧㄚ',
+  'qian': 'ㄑㄧㄢ',
+  'qiang': 'ㄑㄧㄤ',
+  'qiao': 'ㄑㄧㄠ',
+  'qie': 'ㄑㄧㄝ',
+  'qin': 'ㄑㄧㄣ',
+  'qing': 'ㄑㄧㄥ',
+  'qiong': 'ㄑㄩㄥ',
+  'qiu': 'ㄑㄧㄡ',
+  'qu': 'ㄑㄩ',
+  'quan': 'ㄑㄩㄢ',
+  'que': 'ㄑㄩㄝ',
+  'qun': 'ㄑㄩㄣ',
+
+  // R
+  'ran': 'ㄖㄢ',
+  'rang': 'ㄖㄤ',
+  'rao': 'ㄖㄠ',
+  're': 'ㄖㄜ',
+  'ren': 'ㄖㄣ',
+  'reng': 'ㄖㄥ',
+  'ri': 'ㄖ',
+  'rong': 'ㄖㄨㄥ',
+  'rou': 'ㄖㄡ',
+  'ru': 'ㄖㄨ',
+  'ruan': 'ㄖㄨㄢ',
+  'rui': 'ㄖㄨㄟ',
+  'run': 'ㄖㄨㄣ',
+  'ruo': 'ㄖㄨㄛ',
+
+  // S
+  'sa': 'ㄙㄚ',
+  'sai': 'ㄙㄞ',
+  'san': 'ㄙㄢ',
+  'sang': 'ㄙㄤ',
+  'sao': 'ㄙㄠ',
+  'se': 'ㄙㄜ',
+  'sen': 'ㄙㄣ',
+  'seng': 'ㄙㄥ',
+  'sha': 'ㄕㄚ',
+  'shai': 'ㄕㄞ',
+  'shan': 'ㄕㄢ',
+  'shang': 'ㄕㄤ',
+  'shao': 'ㄕㄠ',
+  'she': 'ㄕㄜ',
+  'shei': 'ㄕㄟ',
+  'shen': 'ㄕㄣ',
+  'sheng': 'ㄕㄥ',
+  'shi': 'ㄕ',
+  'shou': 'ㄕㄡ',
+  'shu': 'ㄕㄨ',
+  'shua': 'ㄕㄨㄚ',
+  'shuai': 'ㄕㄨㄞ',
+  'shuan': 'ㄕㄨㄢ',
+  'shuang': 'ㄕㄨㄤ',
+  'shui': 'ㄕㄨㄟ',
+  'shun': 'ㄕㄨㄣ',
+  'shuo': 'ㄕㄨㄛ',
+  'si': 'ㄙ',
+  'song': 'ㄙㄨㄥ',
+  'sou': 'ㄙㄡ',
+  'su': 'ㄙㄨ',
+  'suan': 'ㄙㄨㄢ',
+  'sui': 'ㄙㄨㄟ',
+  'sun': 'ㄙㄨㄣ',
+  'suo': 'ㄙㄨㄛ',
+
+  // T
+  'ta': 'ㄊㄚ',
+  'tai': 'ㄊㄞ',
+  'tan': 'ㄊㄢ',
+  'tang': 'ㄊㄤ',
+  'tao': 'ㄊㄠ',
+  'te': 'ㄊㄜ',
+  'teng': 'ㄊㄥ',
+  'ti': 'ㄊㄧ',
+  'tian': 'ㄊㄧㄢ',
+  'tiao': 'ㄊㄧㄠ',
+  'tie': 'ㄊㄧㄝ',
+  'ting': 'ㄊㄧㄥ',
+  'tong': 'ㄊㄨㄥ',
+  'tou': 'ㄊㄡ',
+  'tu': 'ㄊㄨ',
+  'tuan': 'ㄊㄨㄢ',
+  'tui': 'ㄊㄨㄟ',
+  'tun': 'ㄊㄨㄣ',
+  'tuo': 'ㄊㄨㄛ',
+
+  // W
+  'wa': 'ㄨㄚ',
+  'wai': 'ㄨㄞ',
+  'wan': 'ㄨㄢ',
+  'wang': 'ㄨㄤ',
+  'wei': 'ㄨㄟ',
+  'wen': 'ㄨㄣ',
+  'weng': 'ㄨㄥ',
+  'wo': 'ㄨㄛ',
+  'wu': 'ㄨ',
+
+  // X
+  'xi': 'ㄒㄧ',
+  'xia': 'ㄒㄧㄚ',
+  'xian': 'ㄒㄧㄢ',
+  'xiang': 'ㄒㄧㄤ',
+  'xiao': 'ㄒㄧㄠ',
+  'xie': 'ㄒㄧㄝ',
+  'xin': 'ㄒㄧㄣ',
+  'xing': 'ㄒㄧㄥ',
+  'xiong': 'ㄒㄩㄥ',
+  'xiu': 'ㄒㄧㄡ',
+  'xu': 'ㄒㄩ',
+  'xuan': 'ㄒㄩㄢ',
+  'xue': 'ㄒㄩㄝ',
+  'xun': 'ㄒㄩㄣ',
+
+  // Y
+  'ya': 'ㄧㄚ',
+  'yan': 'ㄧㄢ',
+  'yang': 'ㄧㄤ',
+  'yao': 'ㄧㄠ',
+  'ye': 'ㄧㄝ',
+  'yi': 'ㄧ',
+  'yin': 'ㄧㄣ',
+  'ying': 'ㄧㄥ',
+  'yo': 'ㄧㄛ',
+  'yong': 'ㄩㄥ',
+  'you': 'ㄧㄡ',
+  'yu': 'ㄩ',
+  'yuan': 'ㄩㄢ',
+  'yue': 'ㄩㄝ',
+  'yun': 'ㄩㄣ',
+
+  // Z
+  'za': 'ㄗㄚ',
+  'zai': 'ㄗㄞ',
+  'zan': 'ㄗㄢ',
+  'zang': 'ㄗㄤ',
+  'zao': 'ㄗㄠ',
+  'ze': 'ㄗㄜ',
+  'zei': 'ㄗㄟ',
+  'zen': 'ㄗㄣ',
+  'zeng': 'ㄗㄥ',
+  'zha': 'ㄓㄚ',
+  'zhai': 'ㄓㄞ',
+  'zhan': 'ㄓㄢ',
+  'zhang': 'ㄓㄤ',
+  'zhao': 'ㄓㄠ',
+  'zhe': 'ㄓㄜ',
+  'zhei': 'ㄓㄟ',
+  'zhen': 'ㄓㄣ',
+  'zheng': 'ㄓㄥ',
+  'zhi': 'ㄓ',
+  'zhong': 'ㄓㄨㄥ',
+  'zhou': 'ㄓㄡ',
+  'zhu': 'ㄓㄨ',
+  'zhua': 'ㄓㄨㄚ',
+  'zhuai': 'ㄓㄨㄞ',
+  'zhuan': 'ㄓㄨㄢ',
+  'zhuang': 'ㄓㄨㄤ',
+  'zhui': 'ㄓㄨㄟ',
+  'zhun': 'ㄓㄨㄣ',
+  'zhuo': 'ㄓㄨㄛ',
+  'zi': 'ㄗ',
+  'zong': 'ㄗㄨㄥ',
+  'zou': 'ㄗㄡ',
+  'zu': 'ㄗㄨ',
+  'zuan': 'ㄗㄨㄢ',
+  'zui': 'ㄗㄨㄟ',
+  'zun': 'ㄗㄨㄣ',
+  'zuo': 'ㄗㄨㄛ'
+};
+
+/**
+ * Converts a Pinyin string with tone number (e.g., 'pao3', 'bu4', 'de5', 'zhe') to Zhuyin
+ */
+export function pinyinToZhuyin(pinyinStr: string): string {
+  if (!pinyinStr) return '';
+  const cleaned = pinyinStr.toLowerCase().trim();
+
+  // Extract tone number (0-5), defaults to 1 if none found
+  let toneNum = 1;
+  let basePinyin = cleaned;
+
+  const toneMatch = cleaned.match(/([0-5])$/);
+  if (toneMatch) {
+    toneNum = parseInt(toneMatch[1], 10);
+    basePinyin = cleaned.slice(0, -1);
+  }
+
+  // Normalize ü or v to v / ü
+  basePinyin = basePinyin.replace(/u:/g, 'v').replace(/ü/g, 'v');
+
+  // Look up base zhuyin
+  let zhuyinBase = PINYIN_BASE_TO_ZHUYIN[basePinyin];
+  if (!zhuyinBase) {
+    // If not found directly, try replacing 'v' with 'u' (e.g. ju, qu, xu)
+    if (basePinyin.includes('v')) {
+      const alt = basePinyin.replace(/v/g, 'u');
+      zhuyinBase = PINYIN_BASE_TO_ZHUYIN[alt];
+    }
+  }
+
+  if (!zhuyinBase) {
+    return '';
+  }
+
+  // Append tone
+  switch (toneNum) {
+    case 1:
+      return zhuyinBase; // 1st tone has no mark in Taiwan Zhuyin
+    case 2:
+      return `${zhuyinBase}ˊ`;
+    case 3:
+      return `${zhuyinBase}ˇ`;
+    case 4:
+      return `${zhuyinBase}ˋ`;
+    case 0:
+    case 5:
+      return `˙${zhuyinBase}`; // Neutral tone dot is placed at the top
+    default:
+      return zhuyinBase;
+  }
+}

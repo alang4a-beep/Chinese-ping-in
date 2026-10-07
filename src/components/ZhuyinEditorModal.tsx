@@ -21,6 +21,39 @@ export const ZhuyinEditorModal: React.FC<ZhuyinEditorModalProps> = ({
 
   const polyData = POLYPHONE_DICT[item.char];
   const currentZhuyinStr = item.customZhuyin || item.zhuyin?.raw || '';
+
+  // Combine readings from dictionary and all alternatives
+  const unifiedReadings = React.useMemo(() => {
+    const list: Array<{ zhuyin: string; meaning?: string; examples?: string[]; isDefault?: boolean }> = [];
+    const seen = new Set<string>();
+
+    if (polyData && polyData.readings) {
+      polyData.readings.forEach((r) => {
+        list.push({
+          zhuyin: r.zhuyin,
+          meaning: r.meaning,
+          examples: r.examples,
+          isDefault: r.zhuyin === polyData.default
+        });
+        seen.add(r.zhuyin);
+      });
+    }
+
+    if (item.alternatives) {
+      item.alternatives.forEach((alt) => {
+        if (!seen.has(alt) && alt) {
+          list.push({
+            zhuyin: alt,
+            meaning: '詞庫多音字讀音',
+            isDefault: false
+          });
+          seen.add(alt);
+        }
+      });
+    }
+
+    return list;
+  }, [item.char, item.alternatives, polyData]);
   
   const [inputVal, setInputVal] = useState<string>(currentZhuyinStr);
   const [selectedInitial, setSelectedInitial] = useState<string>(item.zhuyin?.initial || '');
@@ -160,9 +193,9 @@ export const ZhuyinEditorModal: React.FC<ZhuyinEditorModalProps> = ({
           >
             <Sparkles size={16} />
             <span>字典讀音 (破音字)</span>
-            {polyData?.readings && polyData.readings.length > 1 && (
+            {unifiedReadings.length > 1 && (
               <span className="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">
-                {polyData.readings.length}
+                {unifiedReadings.length}
               </span>
             )}
           </button>
@@ -184,9 +217,9 @@ export const ZhuyinEditorModal: React.FC<ZhuyinEditorModalProps> = ({
           {/* Tab 1: Quick Polyphone Picker */}
           {activeTab === 'quick' && (
             <div className="space-y-3">
-              {polyData && polyData.readings && polyData.readings.length > 0 ? (
+              {unifiedReadings.length > 0 ? (
                 <div className="grid grid-cols-1 gap-2.5">
-                  {polyData.readings.map((reading, idx) => {
+                  {unifiedReadings.map((reading, idx) => {
                     const isSelected = inputVal === reading.zhuyin;
                     return (
                       <button
@@ -204,7 +237,7 @@ export const ZhuyinEditorModal: React.FC<ZhuyinEditorModalProps> = ({
                             <span className="font-bold text-lg text-slate-900 font-mono tracking-wider">
                               {reading.zhuyin}
                             </span>
-                            {reading.zhuyin === polyData.default && (
+                            {reading.isDefault && (
                               <span className="text-[11px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-medium">
                                 常用預設
                               </span>

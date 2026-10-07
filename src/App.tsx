@@ -19,7 +19,7 @@ import {
   Volume2
 } from 'lucide-react';
 
-const DEFAULT_TEXT = `跑步`;
+const DEFAULT_TEXT = '';
 
 export default function App() {
   const [inputText, setInputText] = useState<string>(DEFAULT_TEXT);
@@ -202,6 +202,10 @@ export default function App() {
             <div className="flex items-center space-x-3 text-xs text-slate-500">
               <span>總字數：<strong className="text-slate-900 font-mono">{charItems.length}</strong></span>
               <span>國字：<strong className="text-amber-700 font-mono">{charItems.filter(i => i.isChinese).length}</strong></span>
+              <span className="inline-flex items-center gap-1 text-emerald-700 font-medium bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <Check size={12} className="text-emerald-600" />
+                <span>全字詞庫自動標音 (100%)</span>
+              </span>
               {Object.keys(customOverrides).length > 0 && (
                 <span className="px-2 py-0.5 bg-amber-50 text-amber-800 rounded-full border border-amber-200 font-medium">
                   已自訂 {Object.keys(customOverrides).length} 處讀音
@@ -238,22 +242,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Toolbar Controls */}
-        <ControlToolbar
-          settings={settings}
-          onUpdateSettings={updateSettings}
-          onSpeakAll={handleSpeakAll}
-          isSpeaking={isSpeaking}
-          onOpenWorksheetModal={() => setIsWorksheetOpen(true)}
-          onResetOverrides={handleResetOverrides}
-          hasCustomOverrides={Object.keys(customOverrides).length > 0}
-          onSelectSample={(text) => {
-            setInputText(text);
-            setCustomOverrides({});
-          }}
-        />
-
-        {/* Visual Document Viewer Area */}
+        {/* Visual Document Viewer Area (排版成果展示) */}
         <div className="space-y-2">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center space-x-2">
@@ -273,6 +262,31 @@ export default function App() {
             selectedCharId={editingItem?.id || null}
             onCharClick={handleCharClick}
             onCharContextMenu={(_e, item) => handleCharClick(item)}
+          />
+        </div>
+
+        {/* Toolbar Controls (排版方向等設定 - 位於成果展示下方) */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              排版設定與字體工具
+            </span>
+            <span className="text-xs text-slate-400">
+              即時調整方向、字體、格線與紙張
+            </span>
+          </div>
+          <ControlToolbar
+            settings={settings}
+            onUpdateSettings={updateSettings}
+            onSpeakAll={handleSpeakAll}
+            isSpeaking={isSpeaking}
+            onOpenWorksheetModal={() => setIsWorksheetOpen(true)}
+            onResetOverrides={handleResetOverrides}
+            hasCustomOverrides={Object.keys(customOverrides).length > 0}
+            onSelectSample={(text) => {
+              setInputText(text);
+              setCustomOverrides({});
+            }}
           />
         </div>
 

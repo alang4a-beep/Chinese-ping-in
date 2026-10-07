@@ -109,88 +109,92 @@ export const BopomofoViewer: React.FC<BopomofoViewerProps> = ({
         } as React.CSSProperties
       }
     >
-      {/* Document Content Canvas */}
-      <div className="w-full flex justify-center">
-        {isVertical ? (
-          /* ================================================================
-             VERTICAL MODE: 由上到下（由右至左換行）
-             Lines are laid out horizontally in reverse (from right to left).
-             Each line stacks its characters from top to bottom.
-             ================================================================ */
-          <div className="flex flex-row-reverse items-start justify-end gap-x-6 gap-y-0 w-full overflow-x-auto py-4 min-h-[400px]">
-            {paragraphs.map((paragraph, pIdx) => (
-              <div
-                key={pIdx}
-                className="flex flex-col items-center justify-start shrink-0"
-                style={{
-                  marginRight: `${lineSpacing * 0.5}px`,
-                  marginLeft: `${lineSpacing * 0.5}px`
-                }}
-              >
-                {paragraph.length === 0 ? (
-                  // Blank line spacer in vertical mode
-                  <div
-                    style={{
-                      width: `${settings.fontSize * 1.5}px`,
-                      height: `${settings.fontSize * 1.5}px`
-                    }}
-                  />
-                ) : (
-                  paragraph.map((item) => (
-                    <BopomofoChar
-                      key={item.id}
-                      item={item}
-                      settings={settings}
-                      isSelected={selectedCharId === item.id}
-                      onClick={onCharClick}
-                      onContextMenu={onCharContextMenu}
-                    />
-                  ))
-                )}
-              </div>
-            ))}
+      {/* Document Content Canvas or Empty State */}
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center my-auto py-16 text-center select-none">
+          <div className="w-14 h-14 rounded-2xl bg-black/5 flex items-center justify-center text-2xl font-bold mb-3 shadow-inner opacity-75">
+            注
           </div>
-        ) : (
-          /* ================================================================
-             HORIZONTAL MODE: 由左至右（向下換行）
-             Text flows from left to right, wrapping downwards.
-             Zhuyin is vertically positioned on the right of each character.
-             ================================================================ */
-          <div className="flex flex-col items-start w-full space-y-4 py-4">
-            {paragraphs.map((paragraph, pIdx) => (
-              <div
-                key={pIdx}
-                className="flex flex-wrap items-center w-full"
-                style={{
-                  rowGap: `${lineSpacing}px`
-                }}
-              >
-                {paragraph.length === 0 ? (
-                  // Blank line spacer in horizontal mode
-                  <div className="w-full" style={{ height: `${settings.fontSize * 0.8}px` }} />
-                ) : (
-                  paragraph.map((item) => (
-                    <BopomofoChar
-                      key={item.id}
-                      item={item}
-                      settings={settings}
-                      isSelected={selectedCharId === item.id}
-                      onClick={onCharClick}
-                      onContextMenu={onCharContextMenu}
+          <p className="text-base font-bold opacity-85">請在上方輸入欲排版的國字或文章</p>
+          <p className="text-xs mt-1.5 opacity-65 max-w-md leading-relaxed">
+            輸入完成後，系統將自動於國字旁標注注音與聲調。可於下方工具列切換「由上到下直排」或「由左至右橫排」。
+          </p>
+        </div>
+      ) : (
+        <div className="w-full flex justify-center">
+          {isVertical ? (
+            /* ================================================================
+               VERTICAL MODE: 由上到下（由右至左換行）
+               Lines are laid out horizontally in reverse (from right to left).
+               Each line stacks its characters from top to bottom.
+               ================================================================ */
+            <div className="flex flex-row-reverse items-start justify-end gap-x-6 gap-y-0 w-full overflow-x-auto py-4 min-h-[400px]">
+              {paragraphs.map((paragraph, pIdx) => (
+                <div
+                  key={pIdx}
+                  className="flex flex-col items-center justify-start shrink-0"
+                  style={{
+                    marginRight: `${lineSpacing * 0.5}px`,
+                    marginLeft: `${lineSpacing * 0.5}px`
+                  }}
+                >
+                  {paragraph.length === 0 ? (
+                    // Blank line spacer in vertical mode
+                    <div
+                      style={{
+                        width: `${settings.fontSize * 1.5}px`,
+                        height: `${settings.fontSize * 1.5}px`
+                      }}
                     />
-                  ))
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Empty State */}
-      {items.length === 0 && (
-        <div className="flex flex-col items-center justify-center my-auto py-20 text-center opacity-60">
-          <p className="text-lg font-medium">請在上方輸入框輸入任何國字</p>
-          <p className="text-xs mt-1">系統將自動標注標準注音與聲調，支援直排與橫排自由切換</p>
+                  ) : (
+                    paragraph.map((item) => (
+                      <BopomofoChar
+                        key={item.id}
+                        item={item}
+                        settings={settings}
+                        isSelected={selectedCharId === item.id}
+                        onClick={onCharClick}
+                        onContextMenu={onCharContextMenu}
+                      />
+                    ))
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* ================================================================
+               HORIZONTAL MODE: 由左至右（向下換行）
+               Text flows from left to right, wrapping downwards.
+               Zhuyin is vertically positioned on the right of each character.
+               ================================================================ */
+            <div className="flex flex-col items-start w-full space-y-4 py-4">
+              {paragraphs.map((paragraph, pIdx) => (
+                <div
+                  key={pIdx}
+                  className="flex flex-wrap items-center w-full"
+                  style={{
+                    rowGap: `${lineSpacing}px`
+                  }}
+                >
+                  {paragraph.length === 0 ? (
+                    // Blank line spacer in horizontal mode
+                    <div className="w-full" style={{ height: `${settings.fontSize * 0.8}px` }} />
+                  ) : (
+                    paragraph.map((item) => (
+                      <BopomofoChar
+                        key={item.id}
+                        item={item}
+                        settings={settings}
+                        isSelected={selectedCharId === item.id}
+                        onClick={onCharClick}
+                        onContextMenu={onCharContextMenu}
+                      />
+                    ))
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

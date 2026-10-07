@@ -1,522 +1,123 @@
 import { POLYPHONE_DICT } from './zhuyinDict';
 import { parseZhuyin, isChineseChar, isPunctuationChar } from '../utils/zhuyinParser';
+import { pinyinToZhuyin } from '../utils/pinyinToZhuyin';
 import { CharItem } from '../types';
+import { pinyin } from 'pinyin-pro';
+import { sify } from 'chinese-conv';
 
 /**
- * Standard Chinese Character to Zhuyin mapping for common characters
- * (Deduplicated list)
+ * Taiwan MOE specific default overrides for characters whose standard pronunciation in Taiwan
+ * differs from Mainland Pinyin dictionary defaults.
  */
-export const COMMON_CHAR_ZHUYIN: Record<string, string> = {
+export const TAIWAN_MOE_OVERRIDES: Record<string, string> = {
   '跑': 'ㄆㄠˇ',
   '步': 'ㄅㄨˋ',
-  '你': 'ㄋㄧˇ',
-  '我': 'ㄨㄛˇ',
-  '他': 'ㄊㄚ',
-  '她': 'ㄊㄚ',
-  '它': 'ㄊㄚ',
-  '們': '˙ㄇㄣ',
-  '這': 'ㄓㄜˋ',
-  '那': 'ㄋㄚˋ',
-  '裡': 'ㄌㄧˇ',
-  '哪': 'ㄋㄚˇ',
-  '是': 'ㄕˋ',
-  '有': 'ㄧㄡˇ',
-  '在': 'ㄗㄞˋ',
-  '大': 'ㄉㄚˋ',
-  '小': 'ㄒㄧㄠˇ',
-  '人': 'ㄖㄣˊ',
-  '個': '˙ㄍㄜ',
-  '一': 'ㄧ',
-  '二': 'ㄦˋ',
-  '三': 'ㄙㄢ',
-  '四': 'ㄙˋ',
-  '五': 'ㄨˇ',
-  '六': 'ㄌㄧㄡˋ',
-  '七': 'ㄑㄧ',
-  '八': 'ㄅㄚ',
-  '九': 'ㄐㄧㄡˇ',
-  '十': 'ㄕˊ',
-  '百': 'ㄅㄞˇ',
-  '千': 'ㄑㄧㄢ',
-  '萬': 'ㄨㄢˋ',
-  '億': 'ㄧˋ',
-  '天': 'ㄊㄧㄢ',
-  '地': 'ㄉㄧˋ',
-  '日': 'ㄖˋ',
-  '月': 'ㄩㄝˋ',
-  '星': 'ㄒㄧㄥ',
-  '水': 'ㄕㄨㄟˇ',
-  '火': 'ㄏㄨㄛˇ',
-  '木': 'ㄇㄨˋ',
-  '金': 'ㄐㄧㄣ',
-  '土': 'ㄊㄨˇ',
-  '山': 'ㄕㄢ',
-  '川': 'ㄔㄨㄢ',
-  '海': 'ㄏㄞˇ',
-  '風': 'ㄈㄥ',
-  '雨': 'ㄩˇ',
-  '花': 'ㄏㄨㄚ',
-  '草': 'ㄘㄠˇ',
-  '樹': 'ㄕㄨˋ',
-  '鳥': 'ㄋㄧㄠˇ',
-  '魚': 'ㄩˊ',
-  '蟲': 'ㄔㄨㄥˊ',
-  '貓': 'ㄇㄠ',
-  '狗': 'ㄍㄡˇ',
-  '學': 'ㄒㄩㄝˊ',
-  '校': 'ㄒㄧㄠˋ',
-  '生': 'ㄕㄥ',
-  '師': 'ㄕ',
-  '友': 'ㄧㄡˇ',
-  '家': 'ㄐㄧㄚ',
-  '爸': 'ㄅㄚˋ',
-  '媽': 'ㄇㄚ',
-  '哥': 'ㄍㄜ',
-  '姊': 'ㄐㄧㄝˇ',
-  '姐': 'ㄐㄧㄝˇ',
-  '弟': 'ㄉㄧˋ',
-  '妹': 'ㄇㄟˋ',
-  '爺': 'ㄧㄝˊ',
-  '奶': 'ㄋㄞˇ',
-  '吃': 'ㄔ',
-  '喝': 'ㄏㄜ',
-  '玩': 'ㄨㄢˊ',
-  '樂': 'ㄌㄜˋ',
-  '愛': 'ㄞˋ',
-  '喜': 'ㄒㄧˇ',
-  '歡': 'ㄏㄨㄢ',
-  '美': 'ㄇㄟˇ',
-  '麗': 'ㄌㄧˋ',
-  '好': 'ㄏㄠˇ',
-  '看': 'ㄎㄢˋ',
-  '聽': 'ㄊㄧㄥ',
-  '說': 'ㄕㄨㄛ',
-  '寫': 'ㄒㄧㄝˇ',
-  '讀': 'ㄉㄨˊ',
-  '做': 'ㄗㄨㄛˋ',
-  '走': 'ㄗㄡˇ',
-  '跳': 'ㄊㄧㄠˋ',
-  '飛': 'ㄈㄟ',
-  '游': 'ㄧㄡˊ',
-  '來': 'ㄌㄞˊ',
-  '去': 'ㄑㄩˋ',
-  '回': 'ㄏㄨㄟˊ',
-  '到': 'ㄉㄠˋ',
-  '過': 'ㄍㄨㄛˋ',
-  '得': 'ㄉㄜˊ',
   '著': 'ㄓㄜ˙',
-  '了': '˙ㄌㄜ',
-  '的': '˙ㄉㄜ',
-  '和': 'ㄏㄜˊ',
-  '同': 'ㄊㄨㄥˊ',
-  '與': 'ㄩˇ',
-  '及': 'ㄐㄧˊ',
-  '上': 'ㄕㄤˋ',
-  '下': 'ㄒㄧㄚˋ',
-  '左': 'ㄗㄨㄛˇ',
-  '右': 'ㄧㄡˋ',
-  '前': 'ㄑㄧㄢˊ',
-  '後': 'ㄏㄡˋ',
-  '中': 'ㄓㄨㄥ',
-  '間': 'ㄐㄧㄢ',
-  '內': 'ㄋㄟˋ',
-  '外': 'ㄨㄞˋ',
-  '東': 'ㄉㄨㄥ',
-  '西': 'ㄒㄧ',
-  '南': 'ㄋㄢˊ',
-  '北': 'ㄅㄟˇ',
-  '春': 'ㄔㄨㄣ',
-  '夏': 'ㄒㄧㄚˋ',
-  '秋': 'ㄑㄧㄡ',
-  '冬': 'ㄉㄨㄥ',
-  '早': 'ㄗㄠˇ',
-  '午': 'ㄨˇ',
-  '晚': 'ㄨㄢˇ',
-  '夜': 'ㄧㄝˋ',
-  '明': 'ㄇㄧㄥˊ',
-  '白': 'ㄅㄞˊ',
-  '黑': 'ㄏㄟ',
-  '紅': 'ㄏㄨㄥˊ',
-  '黃': 'ㄏㄨㄤˊ',
-  '藍': 'ㄌㄢˊ',
-  '綠': 'ㄌㄩˋ',
-  '紫': 'ㄗˇ',
-  '青': 'ㄑㄧㄥ',
-  '橙': 'ㄔㄥˊ',
-  '光': 'ㄍㄨㄤ',
-  '亮': 'ㄌㄧㄤˋ',
-  '暗': 'ㄢˋ',
-  '床': 'ㄔㄨㄤˊ',
-  '疑': 'ㄧˊ',
-  '霜': 'ㄕㄨㄤ',
-  '舉': 'ㄐㄩˇ',
-  '頭': 'ㄊㄡˊ',
-  '望': 'ㄨㄤˋ',
-  '低': 'ㄉㄧ',
-  '思': 'ㄙ',
-  '故': 'ㄍㄨˋ',
-  '鄉': 'ㄒㄧㄤ',
-  '靜': 'ㄐㄧㄥˋ',
-  '眠': 'ㄇㄧㄢˊ',
-  '不': 'ㄅㄨˋ',
-  '覺': 'ㄐㄩㄝˊ',
-  '曉': 'ㄒㄧㄠˇ',
-  '處': 'ㄔㄨˋ',
-  '聞': 'ㄨㄣˊ',
-  '啼': 'ㄊㄧˊ',
-  '聲': 'ㄕㄥ',
-  '知': 'ㄓ',
-  '多': 'ㄉㄨㄛ',
-  '少': 'ㄕㄠˇ',
-  '登': 'ㄉㄥ',
-  '鸛': 'ㄍㄨㄢˋ',
-  '雀': 'ㄑㄩㄝˋ',
-  '樓': 'ㄌㄡˊ',
-  '依': 'ㄧ',
-  '盡': 'ㄐㄧㄣˋ',
-  '河': 'ㄏㄜˊ',
-  '入': 'ㄖㄨˋ',
-  '流': 'ㄌㄧㄡˊ',
-  '欲': 'ㄩˋ',
-  '窮': 'ㄑㄩㄥˊ',
-  '目': 'ㄇㄨˋ',
-  '更': 'ㄍㄥˋ',
-  '層': 'ㄘㄥˊ',
-  '國': 'ㄍㄨㄛˊ',
-  '語': 'ㄩˇ',
-  '文': 'ㄨㄣˊ',
-  '字': 'ㄗˋ',
-  '注': 'ㄓㄨˋ',
-  '音': 'ㄧㄣ',
-  '符': 'ㄈㄨˊ',
-  '號': 'ㄏㄠˋ',
-  '排': 'ㄆㄞˊ',
-  '版': 'ㄅㄢˇ',
-  '設': 'ㄕㄜˋ',
-  '置': 'ㄓˋ',
-  '網': 'ㄨㄤˇ',
-  '頁': 'ㄧㄝˋ',
-  '輸': 'ㄕㄨ',
-  '按': 'ㄢˋ',
-  '照': 'ㄓㄠˋ',
-  '圖': 'ㄊㄨˊ',
-  '片': 'ㄆㄧㄢˋ',
-  '方': 'ㄈㄤ',
-  '式': 'ㄕˋ',
-  '以': 'ㄧˇ',
-  '換': 'ㄏㄨㄢˋ',
-  '行': 'ㄒㄧㄥˊ',
-  '顯': 'ㄒㄧㄢˇ',
-  '示': 'ㄕˋ',
-  '編': 'ㄅㄧㄢ',
-  '輯': 'ㄐㄧˊ',
-  '預': 'ㄩˋ',
-  '因': 'ㄧㄣ',
-  '為': 'ㄨㄟˋ',
-  '可': 'ㄎㄜˇ',
-  '能': 'ㄋㄥˊ',
-  '破': 'ㄆㄛˋ',
-  '情': 'ㄑㄧㄥˊ',
-  '況': 'ㄎㄨㄤˋ',
-  '獨': 'ㄉㄨˊ',
-  '立': 'ㄌㄧˋ',
-  '健': 'ㄐㄧㄢˋ',
-  '康': 'ㄎㄤ',
-  '身': 'ㄕㄣ',
-  '體': 'ㄊㄧˇ',
-  '運': 'ㄩㄣˋ',
-  '動': 'ㄉㄨㄥˋ',
-  '朝': 'ㄔㄠˊ',
-  '陽': 'ㄧㄤˊ',
-  '迎': 'ㄧㄥˊ',
-  '接': 'ㄐㄧㄝ',
-  '新': 'ㄒㄧㄣ',
-  '微': 'ㄨㄟˊ',
-  '笑': 'ㄒㄧㄠˋ',
-  '面': 'ㄇㄧㄢˋ',
-  '對': 'ㄉㄨㄟˋ',
-  '每': 'ㄇㄟˇ',
-  '挑': 'ㄊㄧㄠˇ',
-  '戰': 'ㄓㄢˋ',
-  '努': 'ㄋㄨˇ',
-  '力': 'ㄌㄧˋ',
-  '進': 'ㄐㄧㄣˋ',
-  '永': 'ㄩㄥˇ',
-  '放': 'ㄈㄤˋ',
-  '棄': 'ㄑㄧˋ',
-  '希': 'ㄒㄧ',
-  '追': 'ㄓㄨㄟ',
-  '逐': 'ㄓㄨˊ',
-  '夢': 'ㄇㄥˋ',
-  '想': 'ㄒㄧㄤˇ',
-  '勇': 'ㄩㄥˇ',
-  '氣': 'ㄑㄧˋ',
-  '相': 'ㄒㄧㄤ',
-  '伴': 'ㄅㄢˋ',
-  '普': 'ㄆㄨˇ',
-  '滿': 'ㄇㄢˇ',
-  '溫': 'ㄨㄣ',
-  '暖': 'ㄋㄨㄢˇ',
-  '世': 'ㄕˋ',
-  '界': 'ㄐㄧㄝˋ',
-  '真': 'ㄓㄣ',
-  '精': 'ㄐㄧㄥ',
-  '采': 'ㄘㄞˇ',
-  '開': 'ㄎㄞ',
-  '心': 'ㄒㄧㄣ',
-  '快': 'ㄎㄨㄞˋ',
-  '認': 'ㄖㄣˋ',
-  '求': 'ㄑㄧㄡˊ',
-  '長': 'ㄓㄤˇ',
-  '智': 'ㄓˋ',
-  '慧': 'ㄏㄨㄟˋ',
-  '隨': 'ㄙㄨㄟˊ',
-  '成': 'ㄔㄥˊ',
-  '創': 'ㄔㄨㄤˋ',
-  '造': 'ㄗㄠˋ',
-  '未': 'ㄨㄟˋ',
-  '輝': 'ㄏㄨㄟ',
-  '煌': 'ㄏㄨㄤˊ',
-  '舟': 'ㄓㄡ',
-  '共': 'ㄍㄨㄥˋ',
-  '濟': 'ㄐㄧˋ',
-  '佳': 'ㄐㄧㄚ',
-  '績': 'ㄐㄧ',
+  '和': 'ㄏㄢˋ',
+  '骰': 'ㄊㄡˊ',
+  '企': 'ㄑㄧˋ',
   '攜': 'ㄒㄧ',
-  '手': 'ㄕㄡˇ',
-  '並': 'ㄅㄧㄥˋ',
-  '肩': 'ㄐㄧㄢ',
-  '邁': 'ㄇㄞˋ',
-  '向': 'ㄒㄧㄤˋ',
-  '遠': 'ㄩㄢˇ',
-  '書': 'ㄕㄨ',
-  '筆': 'ㄅㄧˇ',
-  '紙': 'ㄓˇ',
-  '墨': 'ㄇㄛˋ',
-  '硯': 'ㄧㄢˋ',
-  '桌': 'ㄓㄨㄛ',
-  '椅': 'ㄧˇ',
-  '窗': 'ㄔㄨㄤ',
-  '門': 'ㄇㄣˊ',
-  '屋': 'ㄨ',
-  '房': 'ㄈㄤˊ',
-  '城': 'ㄔㄥˊ',
-  '市': 'ㄕˋ',
-  '村': 'ㄘㄨㄣ',
-  '路': 'ㄌㄨˋ',
-  '道': 'ㄉㄠˋ',
-  '車': 'ㄔㄜ',
-  '船': 'ㄔㄨㄢˊ',
-  '機': 'ㄐㄧ',
-  '電': 'ㄉㄧㄢˋ',
-  '腦': 'ㄋㄠˇ',
-  '話': 'ㄏㄨㄚˋ',
-  '鐘': 'ㄓㄨㄥ',
-  '錶': 'ㄅㄧㄠˇ',
-  '衣': 'ㄧ',
-  '服': 'ㄈㄨˊ',
-  '鞋': 'ㄒㄧㄝˊ',
-  '帽': 'ㄇㄠˋ',
-  '襪': 'ㄨㄚˋ',
-  '褲': 'ㄎㄨˋ',
-  '飯': 'ㄈㄢˋ',
-  '菜': 'ㄘㄞˋ',
-  '肉': 'ㄖㄡˋ',
-  '蛋': 'ㄉㄢˋ',
-  '茶': 'ㄔㄚˊ',
-  '酒': 'ㄐㄧㄡˇ',
-  '果': 'ㄍㄨㄛˇ',
-  '糖': 'ㄊㄤˊ',
-  '鹽': 'ㄧㄢˊ',
-  '油': 'ㄧㄡˊ',
-  '醬': 'ㄐㄧㄤˋ',
-  '醋': 'ㄘㄨˋ',
-  '銀': 'ㄧㄣˊ',
-  '銅': 'ㄊㄨㄥˊ',
-  '鐵': 'ㄊㄧㄝˇ',
-  '錫': 'ㄒㄧˊ',
-  '石': 'ㄕˊ',
-  '玉': 'ㄩˋ',
-  '珠': 'ㄓㄨ',
-  '寶': 'ㄅㄠˇ',
-  '眼': 'ㄧㄢˇ',
-  '耳': 'ㄦˇ',
-  '鼻': 'ㄅㄧˊ',
-  '舌': 'ㄕㄜˊ',
-  '意': 'ㄧˋ',
-  '足': 'ㄗㄨˊ',
-  '肝': 'ㄍㄢ',
-  '脾': 'ㄆㄧˊ',
-  '肺': 'ㄈㄟˋ',
-  '腎': 'ㄕㄣˋ',
-  '骨': 'ㄍㄨˇ',
-  '血': 'ㄒㄧㄝˇ',
-  '脈': 'ㄇㄞˋ',
-  '筋': 'ㄐㄧㄣ',
-  '皮': 'ㄆㄧˊ',
-  '毛': 'ㄇㄠˊ',
+  '液': 'ㄧˋ',
+  '崖': 'ㄧㄞˊ',
+  '穴': 'ㄒㄩㄝˋ',
+  '俄': 'ㄜˊ',
+  '法': 'ㄈㄚˇ',
   '髮': 'ㄈㄚˇ',
-  '齒': 'ㄔˇ',
-  '爪': 'ㄓㄨㄚˇ',
-  '角': 'ㄐㄧㄠˇ',
-  '尾': 'ㄨㄟˇ',
-  '鱗': 'ㄌㄧㄣˊ',
-  '羽': 'ㄩˇ',
-  '翅': 'ㄔˋ',
-  '膀': 'ㄅㄤˇ',
-  '頸': 'ㄐㄧㄥˇ',
-  '胸': 'ㄒㄩㄥ',
-  '腹': 'ㄈㄨˋ',
-  '腰': 'ㄧㄠ',
-  '背': 'ㄅㄟˋ',
-  '臂': 'ㄅㄧˋ',
-  '腿': 'ㄊㄨㄟˇ',
-  '膝': 'ㄒㄧ',
-  '踝': 'ㄏㄨㄞˊ',
-  '趾': 'ㄓˇ',
-  '眉': 'ㄇㄟˊ',
-  '睫': 'ㄐㄧㄝˊ',
-  '腮': 'ㄙㄞ',
-  '頰': 'ㄐㄧㄚˊ',
-  '唇': 'ㄔㄨㄣˊ',
-  '喉': 'ㄏㄡˊ',
-  '嚨': 'ㄌㄨㄥˊ',
-  '腔': 'ㄑㄧㄤ',
-  '胃': 'ㄨㄟˋ',
-  '腸': 'ㄔㄤˊ',
-  '膽': 'ㄉㄢˇ',
-  '洸': 'ㄍㄨㄤ',
-  '孔': 'ㄎㄨㄥˇ',
-  '孟': 'ㄇㄥˋ',
-  '老': 'ㄌㄠˇ',
-  '莊': 'ㄓㄨㄤ',
-  '詩': 'ㄕ',
-  '詞': 'ㄘˊ',
-  '曲': 'ㄑㄩˇ',
-  '賦': 'ㄈㄨˋ',
-  '經': 'ㄐㄧㄥ',
-  '史': 'ㄕˇ',
-  '子': 'ㄗˇ',
-  '集': 'ㄐㄧˊ',
-  '仁': 'ㄖㄣˊ',
-  '義': 'ㄧˋ',
-  '禮': 'ㄌㄧˇ',
-  '信': 'ㄒㄧㄣˋ',
-  '忠': 'ㄓㄨㄥ',
-  '孝': 'ㄒㄧㄠˋ',
-  '廉': 'ㄌㄧㄢˊ',
-  '恥': 'ㄔˇ',
-  '良': 'ㄌㄧㄤˊ',
-  '恭': 'ㄍㄨㄥ',
-  '儉': 'ㄐㄧㄢˇ',
-  '讓': 'ㄖㄤˋ',
-  '勤': 'ㄑㄧㄣˊ',
-  '奮': 'ㄈㄣˋ',
-  '樸': 'ㄆㄨˊ',
-  '實': 'ㄕˊ',
-  '誠': 'ㄔㄥˊ',
-  '敬': 'ㄐㄧㄥˋ',
-  '慎': 'ㄕㄣˋ',
-  '毅': 'ㄧˋ',
-  '敏': 'ㄇㄧㄣˇ',
-  '捷': 'ㄐㄧㄝˊ',
-  '聰': 'ㄘㄨㄥ',
-  '巧': 'ㄑㄧㄠˇ',
-  '妙': 'ㄇㄧㄠˋ',
-  '博': 'ㄅㄛˊ',
-  '淵': 'ㄩㄢ',
-  '邃': 'ㄙㄨㄟˋ',
-  '宏': 'ㄏㄨㄥˊ',
-  '偉': 'ㄨㄟˇ',
-  '壯': 'ㄓㄨㄤˋ',
-  '優': 'ㄧㄡ',
-  '雅': 'ㄧㄚˇ',
-  '純': 'ㄔㄨㄣˊ',
-  '潔': 'ㄐㄧㄝˊ',
-  '高': 'ㄍㄠ',
-  '尚': 'ㄕㄤˋ',
-  '正': 'ㄓㄥˋ',
-  '直': 'ㄓˊ',
-  '燦': 'ㄘㄢˋ',
-  '爛': 'ㄌㄢˋ',
-  '清': 'ㄑㄧㄥ',
-  '澈': 'ㄔㄜˋ',
-  '朗': 'ㄌㄤˇ',
-  '幽': 'ㄧㄡ',
-  '寧': 'ㄋㄧㄥˊ',
-  '祥': 'ㄒㄧㄤˊ',
-  '諧': 'ㄒㄧㄝˊ',
-  '幸': 'ㄒㄧㄥˋ',
-  '福': 'ㄈㄨˊ',
-  '安': 'ㄢ',
-  '泰': 'ㄊㄞˋ',
-  '平': 'ㄆㄧㄥˊ',
-  '勝': 'ㄕㄥˋ',
-  '利': 'ㄌㄧˋ',
-  '功': 'ㄍㄨㄥ',
-  '榮': 'ㄖㄨㄥˊ',
-  '耀': 'ㄧㄠˋ',
-  '昌': 'ㄔㄤ',
-  '富': 'ㄈㄨˋ',
-  '強': 'ㄑㄧㄤˊ',
-  '繁': 'ㄈㄢˊ',
-  '展': 'ㄓㄢˇ',
-  '拓': 'ㄊㄨㄛˋ',
-  '發': 'ㄈㄚ',
-  '揚': 'ㄧㄤˊ',
-  '播': 'ㄅㄛ',
-  '芳': 'ㄈㄤ',
-  '留': 'ㄌㄧㄡˊ',
-  '古': 'ㄍㄨˇ',
-  '歲': 'ㄙㄨㄟˋ',
-  '如': 'ㄖㄨˊ',
-  '梭': 'ㄙㄨㄛ',
-  '陰': 'ㄧㄣ',
-  '似': 'ㄙˋ',
-  '箭': 'ㄐㄧㄢˋ',
-  '惜': 'ㄒㄧˊ',
-  '時': 'ㄕˊ',
-  '寸': 'ㄘㄨㄣˋ',
-  '難': 'ㄋㄢˊ',
-  '買': 'ㄇㄞˇ'
+  '微': 'ㄨㄟˊ',
+  '質': 'ㄓˊ',
+  '期': 'ㄑㄧˊ',
+  '究': 'ㄐㄧㄡˋ',
+  '括': 'ㄍㄨㄚ',
+  '垃圾': 'ㄌㄜˋ ㄙㄜˋ',
 };
 
 /**
- * Get Zhuyin for a Chinese character, along with polyphone alternatives
+ * Get Zhuyin for a single Chinese character, along with all polyphone alternatives.
+ * Uses Taiwan MOE dictionary first, then pinyin-pro across 20,000+ characters.
  */
 export function getZhuyinForChar(char: string): { defaultZhuyin: string; alternatives: string[] } {
-  if (POLYPHONE_DICT[char]) {
-    const entry = POLYPHONE_DICT[char];
-    return {
-      defaultZhuyin: entry.default,
-      alternatives: entry.readings.map(r => r.zhuyin)
-    };
+  if (!char || !isChineseChar(char)) {
+    return { defaultZhuyin: '', alternatives: [] };
   }
 
-  if (COMMON_CHAR_ZHUYIN[char]) {
-    return {
-      defaultZhuyin: COMMON_CHAR_ZHUYIN[char],
-      alternatives: [COMMON_CHAR_ZHUYIN[char]]
-    };
+  // Check Taiwan MOE polyphone dictionary first
+  const polyEntry = POLYPHONE_DICT[char];
+  let defaultZhuyin = '';
+  const alternativesSet = new Set<string>();
+
+  if (polyEntry) {
+    defaultZhuyin = polyEntry.default;
+    polyEntry.readings.forEach((r) => alternativesSet.add(r.zhuyin));
+  } else if (TAIWAN_MOE_OVERRIDES[char]) {
+    defaultZhuyin = TAIWAN_MOE_OVERRIDES[char];
+    alternativesSet.add(defaultZhuyin);
+  }
+
+  // Look up character in pinyin-pro using simplified equivalent for dictionary match
+  const simpChar = sify(char);
+  const pinyinList = pinyin(simpChar, { multiple: true, toneType: 'num', type: 'array' });
+
+  if (pinyinList && pinyinList.length > 0) {
+    // If we haven't found a default Zhuyin yet, convert the first pinyin
+    if (!defaultZhuyin) {
+      defaultZhuyin = pinyinToZhuyin(pinyinList[0]);
+    }
+
+    // Add all alternative readings
+    pinyinList.forEach((py) => {
+      const zy = pinyinToZhuyin(py);
+      if (zy) {
+        alternativesSet.add(zy);
+      }
+    });
+  }
+
+  // Ensure defaultZhuyin is also in alternativesSet
+  if (defaultZhuyin) {
+    alternativesSet.add(defaultZhuyin);
   }
 
   return {
-    defaultZhuyin: '',
-    alternatives: []
+    defaultZhuyin: defaultZhuyin || '',
+    alternatives: Array.from(alternativesSet)
   };
 }
 
 /**
- * Tokenize input raw text into structured CharItems with Zhuyin information
+ * Tokenize input raw text into structured CharItems with automatic Zhuyin information.
+ * Uses context-aware sentence segmentation via pinyin-pro so phrases like
+ * 「銀行」vs「行走」、「音樂」vs「快樂」automatically receive correct contextual pronunciations!
  */
 export function tokenizeText(text: string, customOverrides: Record<string, string> = {}): CharItem[] {
   const items: CharItem[] = [];
+  if (!text) return items;
+
+  // We convert the full text into simplified for phrase-level segmentation
+  const simplifiedText = sify(text);
+
+  // Use pinyin-pro type: 'all' to get context-aware pinyin for every character in order
+  let pinyinResults: Array<{
+    origin: string;
+    pinyin: string;
+    num: number;
+    isZh: boolean;
+  }> = [];
+
+  try {
+    pinyinResults = pinyin(simplifiedText, { toneType: 'num', type: 'all' }) as any;
+  } catch (err) {
+    pinyinResults = [];
+  }
+
+  // Map each character in the original text
+  let pyIndex = 0;
   let index = 0;
 
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     const id = `c_${index++}_${ch}_${i}`;
 
+    // Handle newline
     if (ch === '\n') {
       items.push({
         id,
@@ -527,6 +128,10 @@ export function tokenizeText(text: string, customOverrides: Record<string, strin
         zhuyin: null,
         alternatives: []
       });
+      // Advance pyIndex if newline is present in results
+      if (pyIndex < pinyinResults.length && pinyinResults[pyIndex].origin === '\n') {
+        pyIndex++;
+      }
       continue;
     }
 
@@ -534,9 +139,36 @@ export function tokenizeText(text: string, customOverrides: Record<string, strin
     const isPunctuation = isPunctuationChar(ch);
 
     if (isChinese) {
+      // Find contextual pinyin from pinyinResults
+      let contextualZhuyin = '';
+      if (pyIndex < pinyinResults.length) {
+        const pyItem = pinyinResults[pyIndex];
+        if (pyItem.pinyin) {
+          contextualZhuyin = pinyinToZhuyin(pyItem.pinyin);
+        }
+        pyIndex++;
+      }
+
+      // Check Taiwan specific character rules or polyphone dictionary
       const { defaultZhuyin, alternatives } = getZhuyinForChar(ch);
-      const chosenZhuyin = customOverrides[id] !== undefined ? customOverrides[id] : defaultZhuyin;
-      const zhuyinParts = chosenZhuyin ? parseZhuyin(chosenZhuyin) : null;
+
+      // Final automated reading:
+      // If user has polyphone dictionary with contextual match or Taiwan override:
+      let autoZhuyin = contextualZhuyin || defaultZhuyin;
+
+      // Special Taiwan MOE single-character overrides when contextual matches standard Mainland reading
+      if (TAIWAN_MOE_OVERRIDES[ch] && (!contextualZhuyin || ch === '跑' || ch === '步')) {
+        autoZhuyin = TAIWAN_MOE_OVERRIDES[ch];
+      }
+
+      // If user has customized this specific character occurrence
+      const finalZhuyinStr = customOverrides[id] !== undefined ? customOverrides[id] : autoZhuyin;
+      const zhuyinParts = finalZhuyinStr ? parseZhuyin(finalZhuyinStr) : null;
+
+      // Ensure contextualZhuyin is also in alternatives if valid
+      const mergedAlternatives = new Set(alternatives);
+      if (autoZhuyin) mergedAlternatives.add(autoZhuyin);
+      if (contextualZhuyin) mergedAlternatives.add(contextualZhuyin);
 
       items.push({
         id,
@@ -545,10 +177,15 @@ export function tokenizeText(text: string, customOverrides: Record<string, strin
         isPunctuation: false,
         isNewline: false,
         zhuyin: zhuyinParts,
-        alternatives,
+        alternatives: Array.from(mergedAlternatives),
         customZhuyin: customOverrides[id]
       });
     } else {
+      // Non-Chinese character or punctuation
+      if (pyIndex < pinyinResults.length && !pinyinResults[pyIndex].isZh) {
+        pyIndex++;
+      }
+
       items.push({
         id,
         char: ch,
