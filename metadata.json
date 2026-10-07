@@ -1,0 +1,6 @@
+{
+  "name": "國字注音排版產生器 (Bopomofo Ruby Generator)",
+  "description": "專業國字注音垂直旁注排版工具，支援直排（由右至左）、橫排、破音字自訂編輯與練習本字帖輸出。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
